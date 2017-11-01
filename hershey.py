@@ -96,15 +96,33 @@ class Hershey( inkex.Effect ):
             #evaluate text string
             v = 0
             letterVals = [ord(q) - 32 for q in self.options.text] 
-            for q in letterVals:
-                if (q <= 0) or (q > 95):
-                    w += 2*spacing
-                else:
-                    if w > self.options.width:
-                        w = 0
-                        v += FONT_GROUP_V_SPACING
-                    w = draw_svg_text(q, font, w, v, g)
-                    OutputGenerated = True
+
+            wpos = 0
+            #Loop words to wrap
+            for word in self.options.text.split():
+                myletterVals = [ord(q) - 32 for q in word] 
+                
+                wW =  0;
+                for q in myletterVals:
+                    if (q <= 0) or (q > 95):
+                        wW += 2*spacing
+                    else:
+                        wW = svg_text_width(q, clearfont, wW)
+                
+                if wpos+wW > self.options.width:    
+                    v += FONT_GROUP_V_SPACING
+                    wpos=0
+
+                w = wpos   
+                for q in myletterVals:
+                    if (q <= 0) or (q > 95):
+                        w += 2*spacing
+                    else:
+                       w = draw_svg_text(q, font, w, v, g)
+                       OutputGenerated = True
+                wpos = w
+                wpos += 2*spacing
+
         elif self.options.action == 'sample':
             w,v = self.render_table_of_all_fonts( 'group_allfonts', g, spacing, clearfont )
             OutputGenerated = True
