@@ -62,6 +62,10 @@ class Hershey( inkex.Effect ):
             action="store", type="string", 
             dest="text", default="Hershey Text for Inkscape",
             help="The input text to render")
+        self.OptionParser.add_option( "--width",
+            action="store", type="int", 
+            dest="width", default="650",
+            help="The max width")
         self.OptionParser.add_option( "--action",
             action="store", type="string",
             dest="action", default="render",
@@ -96,7 +100,7 @@ class Hershey( inkex.Effect ):
                 if (q <= 0) or (q > 95):
                     w += 2*spacing
                 else:
-                    if w > 650:
+                    if w > self.options.width:
                         w = 0
                         v += FONT_GROUP_V_SPACING
                     w = draw_svg_text(q, font, w, v, g)
